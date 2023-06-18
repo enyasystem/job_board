@@ -49,4 +49,33 @@ function registerUser($username, $email, $password)
         return false; // Registration failed
     }
 }
+
+// Function to authenticate a user
+function authenticateUser($email, $password) {
+    global $conn;
+
+    // Prepare and execute the SQL query to retrieve the user by email
+    $sql = "SELECT id, email, password FROM users WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // Check if a user with the provided email exists
+    if ($result->num_rows === 1) {
+        $user = $result->fetch_assoc();
+        $storedPassword = $user['password'];
+
+        // Verify the provided password against the stored hashed password
+        if (password_verify($password, $storedPassword)) {
+            // Password is correct, set session variables for the authenticated user
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_email'] = $user['email'];
+            return true; // Authentication successful
+        }
+    }
+
+    return false; // Authentication failed
+}
+
 ?>
