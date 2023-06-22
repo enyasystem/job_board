@@ -44,6 +44,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </style>
 </head>
 <body>
+<?php
+        // include('./src/header.php')
+    ?>
     <div class="container">
         <h2>Login</h2>
         <?php if (isset($loginError)) : ?>
